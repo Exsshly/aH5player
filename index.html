@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>本地文件播放</title>
+</head>
+<body>
+<input type="file" id="fileInput" accept="audio/*,video/*" onchange="playLocalFile(this)">
+<div id="playerContainer"></div>
+
+<script>
+function playLocalFile(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const playerContainer = document.getElementById("playerContainer");
+            playerContainer.innerHTML = ""; // 清空之前的播放器
+
+            if (file.type.startsWith("audio")) {
+                const audio = document.createElement("audio");
+                audio.controls = true;
+                audio.src = event.target.result;
+                playerContainer.appendChild(audio);
+            } else if (file.type.startsWith("video")) {
+                const video = document.createElement("video");
+                video.controls = true;
+                video.src = event.target.result;
+                playerContainer.appendChild(video);
+            } else {
+                playerContainer.innerHTML = "不支持的文件格式";
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+</script>
+</body>
+</html>
