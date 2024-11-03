@@ -13,26 +13,30 @@
 function playLocalFile(input) {
     const file = input.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const playerContainer = document.getElementById("playerContainer");
-            playerContainer.innerHTML = ""; // 清空之前的播放器
+        const playerContainer = document.getElementById("playerContainer");
+        playerContainer.innerHTML = ""; // 清空之前的播放器
 
-            if (file.type.startsWith("audio")) {
-                const audio = document.createElement("audio");
-                audio.controls = true;
-                audio.src = event.target.result;
-                playerContainer.appendChild(audio);
-            } else if (file.type.startsWith("video")) {
-                const video = document.createElement("video");
-                video.controls = true;
-                video.src = event.target.result;
-                playerContainer.appendChild(video);
-            } else {
-                playerContainer.innerHTML = "不支持的文件格式";
-            }
+        // 使用 URL.createObjectURL 创建一个可用于视频或音频播放的 URL
+        const fileURL = URL.createObjectURL(file);
+
+        if (file.type.startsWith("audio")) {
+            const audio = document.createElement("audio");
+            audio.controls = true;
+            audio.src = fileURL; // 使用生成的 URL
+            playerContainer.appendChild(audio);
+        } else if (file.type.startsWith("video")) {
+            const video = document.createElement("video");
+            video.controls = true;
+            video.src = fileURL; // 使用生成的 URL
+            playerContainer.appendChild(video);
+        } else {
+            playerContainer.innerHTML = "不支持的文件格式";
+        }
+
+        // 释放 URL 对象
+        video.onloadedmetadata = function() {
+            URL.revokeObjectURL(fileURL); // 当视频元数据加载完毕后释放
         };
-        reader.readAsDataURL(file);
     }
 }
 </script>
